@@ -48,7 +48,7 @@
       <ion-icon name="arrow-dropleft"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="start">
-      <ion-fab-button color="{{cell[0].cost < userValue ? 'success':'danger'}}">
+      <ion-fab-button color="{{cell[0].cost <= userValue ? 'success':'danger'}}">
         ${{userValue}}
       </ion-fab-button>        
     </ion-fab-list>

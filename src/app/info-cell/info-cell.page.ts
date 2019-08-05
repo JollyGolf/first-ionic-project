@@ -16,6 +16,7 @@ export class InfoCellPage implements OnInit {
   currentHotel: IHotel;
   currentCell: ICell[];
   cell: ICell[];
+  hotel: IHotelp[];
   hotels: IHotel[] = hotels;
   cells: ICell[] = cells;
 
@@ -32,6 +33,7 @@ export class InfoCellPage implements OnInit {
   	  (id === 0) ? this.router.navigate(['/home']) : null;
   	  this.currentCell = cells.filter(cell => cell.id === id);
   	  this.cell = this.currentCell.filter(cell => cell.idHotel === this.hotel.id);
+  	  //this.cell = this.currentCell.filter(cell => cell.idHotel === this.hotel.id);
     });
   }
   buyCell() {
