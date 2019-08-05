@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-title color="dark">Cell of Hotel</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-icon name="medal" slot="end"></ion-icon>
+      <ion-label>№: {{cell[0].id}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="list-box" slot="end"></ion-icon>
+      <ion-label>Name: {{cell[0].name}}</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="basket" slot="end"></ion-icon>
+      <ion-label>${{cell[0].cost}}</ion-label>
+    </ion-item>
+
+    <ion-button 
+      margin size="large" 
+      expand="block" 
+      fill="outline" 
+      color="{{userAvailable ? 'warning' : cell[0].available ? 'success':'danger'}}"
+    >
+      {{ userAvailable ? 'Забронирован Вами' : cell[0].available ? 'Свободен' : 'Забронирован' }}
+    </ion-button>
+  </ion-card>
+
+  <ion-card>
+    <ion-button 
+      margin size="large" 
+      expand="block" 
+      fill="outline" 
+      color="primary"
+      (click)="buyCell()"
+      disabled="{{userAvailable ? 'true' : !cell[0].available ? 'true' : cell[0].cost <= userValue ? 'false':'true'}}"
+    >
+      Заказать за ${{cell[0].cost}}	
+    </ion-button>
+  </ion-card>
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="dark">
+      <ion-icon name="arrow-dropleft"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="start">
+      <ion-fab-button color="{{cell[0].cost < userValue ? 'success':'danger'}}">
+        ${{userValue}}
+      </ion-fab-button>        
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

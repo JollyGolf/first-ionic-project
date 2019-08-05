@@ -1,12 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SendIdHotelService } from '../send-id-hotel.service';
+
+import { hotels, IHotel } from '../shared/hotel';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit {
+  idHotel: number;
+  hotels: IHotel[] = hotels;
 
-  constructor() {}
+  constructor(private router: Router, private data: SendIdHotelService) {}
+  
+  ngOnInit() {
+  	this.data.currentIdHotel.subscribe(id => this.idHotel = id)
+  }
 
+  openHotel(hotel: IHotel) {
+  	this.data.changeIdHotel(hotel.id);
+  	this.router.navigate(['/current-hotel']);
+  }
 }
