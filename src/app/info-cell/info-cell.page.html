@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar color="warning">
+  	<ion-button (click)="goBack()" color="warning">
+  	  <ion-icon name="arrow-dropleft-circle" fill="outline" color="dark" size="large"></ion-icon>
+  	</ion-button>
     <ion-title color="dark">Cell of Hotel</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -50,7 +53,11 @@
     <ion-fab-list side="start">
       <ion-fab-button color="{{cell[0].cost <= userValue ? 'success':'danger'}}">
         ${{userValue}}
-      </ion-fab-button>        
+      </ion-fab-button>   
+      
+      <ion-fab-button color="dark" (click)="goBack()">
+        Go back
+      </ion-fab-button>      
     </ion-fab-list>
   </ion-fab>
 </ion-content>

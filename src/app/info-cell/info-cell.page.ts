@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SendIdHotelService } from '../send-id-hotel.service';
+import { Location } from '@angular/common';  
 
 import { hotels, IHotel } from '../shared/hotel';
 import { cells, ICell } from '../shared/cells';
@@ -16,14 +17,14 @@ export class InfoCellPage implements OnInit {
   currentHotel: IHotel;
   currentCell: ICell[];
   cell: ICell[];
-  hotel: IHotelp[];
+  hotel: IHotel[];
   hotels: IHotel[] = hotels;
   cells: ICell[] = cells;
 
   userValue: number = userValue;
   userAvailable: boolean = false;
 
-  constructor(private router: Router, private data: SendIdHotelService) { }
+  constructor(private router: Router, private data: SendIdHotelService, private location: Location) { }
 
   ngOnInit() {
   	this.data.currentIdHotel.subscribe(idHotel => {
@@ -33,12 +34,14 @@ export class InfoCellPage implements OnInit {
   	  (id === 0) ? this.router.navigate(['/home']) : null;
   	  this.currentCell = cells.filter(cell => cell.id === id);
   	  this.cell = this.currentCell.filter(cell => cell.idHotel === this.hotel.id);
-  	  //this.cell = this.currentCell.filter(cell => cell.idHotel === this.hotel.id);
     });
   }
   buyCell() {
     this.userValue -= this.cell[0].cost;
     this.userAvailable = true;
     console.log(this.userValue);
+  }
+  goBack() {
+	this.location.back();
   }
 }

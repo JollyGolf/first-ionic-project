@@ -23,4 +23,8 @@ export class HomePage implements OnInit {
   	this.data.changeIdHotel(hotel.id);
   	this.router.navigate(['/current-hotel']);
   }
+
+  signOut() {
+	this.router.navigate(['/login']);
+  }
 }
