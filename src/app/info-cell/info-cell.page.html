@@ -28,9 +28,9 @@
       margin size="large" 
       expand="block" 
       fill="outline" 
-      color="{{userAvailable ? 'warning' : cell[0].available ? 'success':'danger'}}"
+      color="{{cell[0].available === 0 ? 'success' : cell[0].available === userId ? 'warning':'danger'}}"
     >
-      {{ userAvailable ? 'Забронирован Вами' : cell[0].available ? 'Свободен' : 'Забронирован' }}
+      {{ cell[0].available === 0 ? 'Свободен' : cell[0].available === userId ? 'Забронирован Вами' : 'Забронирован' }}
     </ion-button>
   </ion-card>
 
@@ -41,23 +41,22 @@
       fill="outline" 
       color="primary"
       (click)="buyCell()"
-      disabled="{{userAvailable ? 'true' : !cell[0].available ? 'true' : cell[0].cost <= userValue ? 'false':'true'}}"
+      disabled="{{cell[0].available === 0 ? 'false' : cell[0].available === userId ? 'true' : cell[0].cost <= userValue ? 'true':'false'}}"
     >
       Заказать за ${{cell[0].cost}}	
     </ion-button>
   </ion-card>
   <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    
     <ion-fab-button color="dark">
       <ion-icon name="arrow-dropleft"></ion-icon>
     </ion-fab-button>
+
     <ion-fab-list side="start">
       <ion-fab-button color="{{cell[0].cost <= userValue ? 'success':'danger'}}">
         ${{userValue}}
-      </ion-fab-button>   
-      
-      <ion-fab-button color="dark" (click)="goBack()">
-        Go back
-      </ion-fab-button>      
+      </ion-fab-button>    
     </ion-fab-list>
+
   </ion-fab>
 </ion-content>

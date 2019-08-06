@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { hotels, IHotel } from '../shared/hotel';
 import { cells, ICell } from '../shared/cells';
 
+const userId: number = 1;
 const userValue: number = 75;
 
 @Component({
@@ -18,11 +19,14 @@ export class InfoCellPage implements OnInit {
   currentCell: ICell[];
   cell: ICell[];
   hotel: IHotel[];
-  hotels: IHotel[] = hotels;
   cells: ICell[] = cells;
+  hotels: IHotel[] = hotels;
+  
 
+  userId: number = userId;
   userValue: number = userValue;
-  userAvailable: boolean = false;
+
+  userAvailable: number = 0;
 
   constructor(private router: Router, private data: SendIdHotelService, private location: Location) { }
 
@@ -38,7 +42,7 @@ export class InfoCellPage implements OnInit {
   }
   buyCell() {
     this.userValue -= this.cell[0].cost;
-    this.userAvailable = true;
+    this.cell[0].available = this.userId;
     console.log(this.userValue);
   }
   goBack() {

@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SendIdHotelService {
 
-  private idHotelSource = new BehaviorSubject<number>(0);
+  private idHotelSource = new BehaviorSubject<string>('0');
   private idCellSource = new BehaviorSubject<number>(0);
 
   currentIdHotel = this.idHotelSource.asObservable();
@@ -14,7 +14,7 @@ export class SendIdHotelService {
 
   constructor() { }
 
-  changeIdHotel(id: number) {
+  changeIdHotel(id: string) {
   	this.idHotelSource.next(id);
   }
   changeIdCell(id: number) {
