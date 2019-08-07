@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { SendIdHotelService } from '../send-id-hotel.service';
-
-import { hotels, IHotel } from '../shared/hotel';
-
 import { Apollo } from 'apollo-angular';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import gql from 'graphql-tag';
+
+import { SendIdHotelService } from '../send-id-hotel.service';
+import { ID } from '../shared/empty.ID';
 
 const Hotels = gql`
   query {
@@ -22,31 +22,38 @@ const Hotels = gql`
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
 
-  hotelss: any[];
+export class HomePage implements OnInit, implements OnDestroy{
 
-  idHotel: number;
-  hotels: IHotel[] = hotels;
+  hotels: any[];
 
-  constructor(private router: Router, private data: SendIdHotelService, private apollo: Apollo) {}
+  private querySubscription: Subscription;
   
-  ngOnInit() {
-    this.apollo.watchQuery({ query: Hotels })
-      .valueChanges.subscribe(result => {
-        this.hotelss = result.data && result.data.hotels;
-        console.log(result.data);
-      });
-  	this.data.currentIdHotel.subscribe(id => this.idHotel = id);
+  constructor(
+    private router: Router, 
+    private data: SendIdHotelService, 
+    private apollo: Apollo,
+    private localStorage: LocalStorage
+  ) {}
 
+  ngOnInit() {
+    this.querySubscription = this.apollo.watchQuery({ query: Hotels })
+      .valueChanges.subscribe(result => {
+        this.hotels = result.data && result.data.hotels;
+    });
   }
 
-  openHotel(hotel) {
+  openHotel(hotel: object) {
   	this.data.changeIdHotel(hotel.id);
   	this.router.navigate(['/current-hotel']);
   }
 
   signOut() {
-	this.router.navigate(['/login']);
+    this.localStorage.setItem('user', ID).subscribe(() => { console.log('Success set {ID}')});
+	  this.router.navigate(['/login']);
+  }
+
+  ngOnDestroy() {
+    this.querySubscription.unsubscribe();
   }
 }

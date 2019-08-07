@@ -8,7 +8,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let hotel of hotelss" (click)="openHotel(hotel)">
+  <ion-card  *ngFor="let hotel of hotels" (click)="openHotel(hotel)" 
+  >
     <ion-card-header color="tertiary" outline="true">
       <ion-card-title>{{hotel.name}}</ion-card-title>
     </ion-card-header>

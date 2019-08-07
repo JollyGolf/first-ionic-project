@@ -13,13 +13,11 @@
       <ion-icon name="home" slot="start" color="danger"></ion-icon>
       <ion-label>{{hotel ? hotel.name : null}}</ion-label>
     </ion-item>
-
     <ion-card-content>
 
-      <ion-item *ngFor="let cell of enumCells" margin no-lines (click)="openCell(cell, hotel)">
+      <ion-item *ngFor="let cell of cells" margin no-lines (click)="openCell(cell, hotel)">
       	{{cell.name}}
         <ion-icon name="cube" slot="start" color="tertiary"></ion-icon>
-        {{cell.id}}
       </ion-item>
 
     </ion-card-content>
