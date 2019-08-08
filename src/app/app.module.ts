@@ -12,6 +12,7 @@ import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
+//import { JwtModule } from '@auth0/angular-jwt';
 import { StorageModule } from '@ngx-pwa/local-storage';
 
 @NgModule({

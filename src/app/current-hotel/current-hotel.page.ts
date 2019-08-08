@@ -3,21 +3,11 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';  
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { Subscription } from 'rxjs';
 
 import { SendIdHotelService } from '../send-id-hotel.service';
 import { ID } from '../shared/empty.ID';
-
-const Cells = gql`
-  query {
-    cells {
-      id
-      name
-      hotel{
-        id
-      }
-    }
-  }
-`;
+import * as Query from '../queries/GraphQL.Queries';
 
 @Component({
   selector: 'app-current-hotel',
@@ -25,10 +15,10 @@ const Cells = gql`
   styleUrls: ['./current-hotel.page.scss'],
 })
 
-export class CurrentHotelPage implements OnInit, implements OnDestroy {
+export class CurrentHotelPage implements OnInit, OnDestroy {
 
-  hotel: object;
-  cells: object;
+  hotel: any;
+  cells: any;
 
   private querySubscription: Subscription;
   private serviceSubscription: Subscription;
@@ -43,20 +33,12 @@ export class CurrentHotelPage implements OnInit, implements OnDestroy {
   ngOnInit() {
   	this.serviceSubscription = this.data.currentIdHotel.subscribe(id => {
   	  (id == ID) ? this.router.navigate(['/home']) : null;
-      this.apollo.watchQuery({ query: gql`
-        query {
-          hotel(id:"${id}") {
-            id
-            name
-            cells {
-              id
-              name
-            } 
-          }
-        }
-      `}).valueChanges.subscribe(result => this.hotel = result.data.hotel);
-      this.querySubscription = this.apollo.watchQuery({ query: Cells})
-        .valueChanges.subscribe(result => {
+      this.apollo.watchQuery({ 
+        query: Query.getHotelById, 
+        variables: { id }
+      }).valueChanges.subscribe((result: any) => this.hotel = result.data.hotel);
+      this.querySubscription = this.apollo.watchQuery({ query: Query.Cells})
+        .valueChanges.subscribe((result: any) => {
           let flag = result.data && result.data.cells;
           this.cells = flag 
             ? flag.filter(cell => cell.hotel.id === id) 
@@ -65,8 +47,7 @@ export class CurrentHotelPage implements OnInit, implements OnDestroy {
     });
   }
 
-  openCell(cell: object, hotel: object) {
-    //console.log(cell.id, hotel.id);
+  openCell(cell: any, hotel: any) {
   	this.data.changeIdCell(cell.id);
   	this.router.navigate(['/info-cell']);
   }

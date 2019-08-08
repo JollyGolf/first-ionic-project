@@ -8,9 +8,9 @@ import { ID } from './shared/empty.ID';
 })
 export class SendIdHotelService {
 
-  private idHotelSource = new BehaviorSubject<string>(ID);
-  private idCellSource = new BehaviorSubject<string>(ID);
-  private idUserSource = new BehaviorSubject<string>(ID);
+  private idHotelSource = new BehaviorSubject<any>(ID);
+  private idCellSource = new BehaviorSubject<any>(ID);
+  private idUserSource = new BehaviorSubject<any>(ID);
 
   currentIdHotel = this.idHotelSource.asObservable();
   currentIdCell = this.idCellSource.asObservable();
@@ -18,13 +18,13 @@ export class SendIdHotelService {
 
   constructor() { }
 
-  changeIdHotel(id: string) {
+  changeIdHotel(id: any) {
   	this.idHotelSource.next(id);
   }
-  changeIdCell(id: string) {
+  changeIdCell(id: any) {
   	this.idCellSource.next(id);
   }
-  changeIdUser(id: string) {
+  changeIdUser(id: any) {
     console.log(id);
     this.idUserSource.next(id);
   }

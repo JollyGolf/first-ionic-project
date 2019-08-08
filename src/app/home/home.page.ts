@@ -1,21 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { LocalStorage } from '@ngx-pwa/local-storage';
 import gql from 'graphql-tag';
+import { Subscription } from 'rxjs';
 
 import { SendIdHotelService } from '../send-id-hotel.service';
-import { ID } from '../shared/empty.ID';
-
-const Hotels = gql`
-  query {
-    hotels{
-      id
-      name
-      description
-    }
-  }
-`;
+import * as Query from '../queries/GraphQL.Queries';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +13,7 @@ const Hotels = gql`
   styleUrls: ['home.page.scss'],
 })
 
-export class HomePage implements OnInit, implements OnDestroy{
+export class HomePage implements OnInit, OnDestroy{
 
   hotels: any[];
 
@@ -32,24 +22,23 @@ export class HomePage implements OnInit, implements OnDestroy{
   constructor(
     private router: Router, 
     private data: SendIdHotelService, 
-    private apollo: Apollo,
-    private localStorage: LocalStorage
+    private apollo: Apollo
   ) {}
 
   ngOnInit() {
-    this.querySubscription = this.apollo.watchQuery({ query: Hotels })
-      .valueChanges.subscribe(result => {
+    this.querySubscription = this.apollo.watchQuery({ query: Query.Hotels })
+      .valueChanges.subscribe((result: any) => {
         this.hotels = result.data && result.data.hotels;
     });
   }
 
-  openHotel(hotel: object) {
+  openHotel(hotel: any) {
   	this.data.changeIdHotel(hotel.id);
   	this.router.navigate(['/current-hotel']);
   }
 
   signOut() {
-    this.localStorage.setItem('user', ID).subscribe(() => { console.log('Success set {ID}')});
+    localStorage.removeItem('userToken');
 	  this.router.navigate(['/login']);
   }
 

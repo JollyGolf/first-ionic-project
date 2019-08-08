@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SendIdHotelService } from '../send-id-hotel.service';
-import { Location } from '@angular/common';  
-import { LocalStorage } from '@ngx-pwa/local-storage';
+import { Location } from '@angular/common';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { Subscription } from 'rxjs';
 
 import { ID } from '../shared/empty.ID';
+import * as Query from '../queries/GraphQL.Queries';
+import { SendIdHotelService } from '../send-id-hotel.service';
 
 @Component({
   selector: 'app-info-cell',
   templateUrl: './info-cell.page.html',
   styleUrls: ['./info-cell.page.scss'],
-})
+})  
 
 export class InfoCellPage implements OnInit {
 
@@ -29,46 +30,61 @@ export class InfoCellPage implements OnInit {
     private router: Router, 
     private data: SendIdHotelService, 
     private location: Location,
-    private apollo: Apollo,
-    private localStorage: LocalStorage
+    private apollo: Apollo
   ) { }
 
   ngOnInit() {
   	this.serviceSubscription = this.data.currentIdCell.subscribe(id => {
   	  (id === ID) ? this.router.navigate(['/home']) : null;
-      this.querySubscriptionCell = this.apollo.watchQuery({ query: gql`
-        query {
-          cell(id:"${id}"){
-            name
-            number
-            cost
-            hotel{ id }
-            user{ id }
-          }
-        }
-      `}).valueChanges.subscribe(result => {
+      
+      this.querySubscriptionCell = this.apollo.watchQuery({ 
+        query: Query.getCellById,
+        variables: { id }
+      }).valueChanges.subscribe((result: any) => {
         let { cell } = result.data;
         this.user = !cell ? false : cell.user === null ? false : cell.user.id;
         this.cell = cell;
+        this.userId = localStorage.getItem('userToken');
 
-        this.localStorage.getItem('user').subscribe(user => {
-          this.userId = user;
-          this.querySubscriptionUser = this.apollo.watchQuery({ query: gql`
-            {
-              user(id:"${user}"){ purse }
-            }
-          `}).valueChanges.subscribe(resultUser => {
-            console.log(resultUser.data.user.purse);
-            this.userPurse = resultUser.data.user.purse;
-          });
+        this.querySubscriptionUser = this.apollo.watchQuery({ 
+          query: Query.getUserById,
+          variables: { id: localStorage.getItem('userToken') }
+        }).valueChanges.subscribe((resultUser: any) => {
+          this.userPurse = resultUser.data.user.purse;
         });
       }); 
     });
   }
   buyCell() {
-    // this.userValue -= this.cell[0].cost;
-    // this.cell[0].available = this.userId;
-    // console.log(this.userValue);
+    this.apollo.mutate({ 
+        mutation: Query.updateCellMutation, 
+        variables: { 
+          id: this.cell.id,
+          available: this.userId 
+        }
+      }).subscribe((resultUpdate: any) => {
+        console.log(resultUpdate);
+      });
+
+      this.apollo.mutate({ 
+        mutation: Query.updateUserMutation, 
+        variables: { 
+          id: this.userId, 
+          purse: this.userPurse - this.cell.cost
+        },
+        refetchQueries: [
+          { 
+            query: Query.getCellById,
+            variables: { id: this.cell.id }
+          },
+          {
+            query: Query.getUserById,
+            variables: { id: localStorage.getItem('userToken') }
+          }
+        ]
+      }).subscribe((resultUpdate: any) => {
+        console.log('Data was updated');
+      });
   }
   goBack() {
 	  this.location.back();
